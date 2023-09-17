@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func GetTmdbMovieTitle(title string) {
+func GetTmdbMovieTitle(title string) models.Response {
 
 	url := fmt.Sprintf("https://api.themoviedb.org/3/search/movie?query=%s&include_adult=false&language=en-US&page=1", title)
 
@@ -38,6 +38,5 @@ func GetTmdbMovieTitle(title string) {
 	var resp models.Response
 	json.Unmarshal([]byte(raw), &resp)
 
-	fmt.Println(resp.Results)
-
+	return resp
 }
