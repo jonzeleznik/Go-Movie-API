@@ -13,12 +13,14 @@ func init() {
 
 func main() {
 	r := gin.Default()
-	r.POST("/postMovies", controllers.MovieCreate)
-	r.GET("/getMovies/title/:title", controllers.MovieGetByTitle)
-	r.GET("/getMovies/id/:id", controllers.MovieGetById)
+	r.POST("/movies", controllers.MovieCreate)
+	r.GET("/movies/title/:title", controllers.MovieGetByTitle)
+	r.GET("/movies/id/:id", controllers.MovieGetById)
 
-	r.POST("/postWatchList", controllers.AddToWatchList)
-	r.GET("/getWatchList", controllers.GetWatchList)
+	r.POST("/watchList", controllers.AddToWatchList)
+	r.GET("/watchList", controllers.GetWatchList)
+
+	r.GET(("/search/:title"), controllers.Search)
 	// r.Run((":" + initializers.EnvVars["PORT"]))
 	r.Run()
 }
