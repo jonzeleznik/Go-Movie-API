@@ -58,3 +58,13 @@ func MovieGetById(c *gin.Context) {
 		"movie": movie,
 	})
 }
+
+func MovieDelete(c *gin.Context) {
+	id := c.Param("id")
+
+	initializers.DB.Delete(&models.Movie{}, id)
+
+	c.JSON(200, gin.H{
+		"deleted": true,
+	})
+}

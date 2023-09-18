@@ -16,6 +16,7 @@ func main() {
 	r.POST("/movies", controllers.MovieCreate)
 	r.GET("/movies/title/:title", controllers.MovieGetByTitle)
 	r.GET("/movies/id/:id", controllers.MovieGetById)
+	r.DELETE("/movies/id/:id", controllers.MovieDelete)
 
 	r.POST("/watchList", controllers.AddToWatchList)
 	r.GET("/watchList", controllers.GetWatchList)
