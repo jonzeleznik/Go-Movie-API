@@ -7,13 +7,14 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 )
 
 func GetTmdbMovieTitle(title string) models.Response {
 
-	url := fmt.Sprintf("https://api.themoviedb.org/3/search/movie?query=%s&include_adult=false&language=en-US&page=1", title)
-	fmt.Println(url)
-	req, err := http.NewRequest("GET", url, nil)
+	endpoint := fmt.Sprintf("https://api.themoviedb.org/3/search/movie?query=%s&include_adult=false&language=en-US&page=1", url.PathEscape(title))
+
+	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		fmt.Printf("An error occured: %v", err)
 	}
