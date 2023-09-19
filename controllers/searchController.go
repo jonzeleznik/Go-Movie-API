@@ -36,7 +36,8 @@ func Search(c *gin.Context) {
 		for i, movie := range tmdbMovies.Results {
 			if i < 3 {
 				// -> top payload check if in DB
-				initializers.DB.Where("id = ?", (movie.Id)).Find(&movies)
+				initializers.DB.Where("TMDB_ID = ?", (movie.Id)).Find(&movies)
+				fmt.Println(movies)
 				if len(movies) == 0 {
 					// -> if not write them to DB
 					movie := models.Movie{Title: movie.Original_title, TMDB_ID: movie.Id, Genre: "neki"}
