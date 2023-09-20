@@ -8,12 +8,6 @@ import (
 )
 
 func init() {
-	// _, err := os.Stat("data/movies.db")
-
-	// if os.IsNotExist(err) {
-	// 	migrations.MigrateDB()
-	// }
-
 	initializers.LoadEnvVariables()
 }
 

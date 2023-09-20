@@ -5,6 +5,7 @@ import (
 	"e/models"
 	"e/requests"
 	"fmt"
+	"reflect"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,16 +32,43 @@ func Search(c *gin.Context) {
 		// -> get from TMDB
 		tmdbMovies := requests.GetTmdbMovieTitle(title)
 		var movies []models.Movie
-		fmt.Println(tmdbMovies.Total_results)
 
 		for i, movie := range tmdbMovies.Results {
 			if i < 3 {
 				// -> top payload check if in DB
 				initializers.DB.Where("TMDB_ID = ?", (movie.Id)).Find(&movies)
-				fmt.Println(movies)
 				if len(movies) == 0 {
+					id := movie.Id
+					details := requests.GetTmdbID(id)
+
+					// CANT FIGURE OUT THIS PART :(
+					// Genre is always null...
+					genres := []models.Genre{}
+					aGenres := []models.Genre{}
+					initializers.DB.Find(&aGenres)
+
+					for _, mGenres := range details.Genres {
+						for _, availGenres := range aGenres {
+							if reflect.DeepEqual(mGenres.Name, availGenres.Name) {
+								g := models.Genre{Id: availGenres.Id, Name: availGenres.Name}
+								genres = append(genres, g)
+							}
+						}
+					}
+
+					fmt.Println(genres)
 					// -> if not write them to DB
-					movie := models.Movie{Title: movie.Original_title, TMDB_ID: movie.Id}
+					movie := models.Movie{
+						Title:         details.Original_title,
+						TMDB_ID:       id,
+						IMDB_ID:       details.Imdb_id,
+						Overview:      details.Overview,
+						Release_date:  details.Release_date,
+						Runtime:       details.Runtime,
+						Poster_path:   details.Poster_path,
+						Backdrop_path: details.Backdrop_path,
+						Genre:         genres,
+					}
 					initializers.DB.Create(&movie)
 				}
 			}

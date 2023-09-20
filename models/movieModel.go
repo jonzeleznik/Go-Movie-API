@@ -4,10 +4,10 @@ import (
 	"gorm.io/gorm"
 )
 
-// type Genre struct {
-// 	Id   int
-// 	Name string
-// }
+type Genre struct {
+	Id   int
+	Name string
+}
 
 type Movie struct {
 	gorm.Model
@@ -15,9 +15,9 @@ type Movie struct {
 	TMDB_ID       int
 	IMDB_ID       string
 	Overview      string
-	Genres        []Genre `gorm:"foreignKey:Id"`
+	Genre         []Genre `gorm:"foreignKey:Id"`
 	Release_date  string
-	Rntime        int
+	Runtime       int
 	Poster_path   string
 	Backdrop_path string
 }

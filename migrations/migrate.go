@@ -5,7 +5,7 @@ import (
 	"e/models"
 )
 
-var genres = []models.Genre{
+var Genres = []models.Genre{
 	{Name: "Action"},
 	{Name: "Adventure"},
 	{Name: "Animation"},
@@ -35,5 +35,5 @@ func main() {
 	initializers.DB.AutoMigrate(&models.Movie{})
 	initializers.DB.AutoMigrate(&models.WatchListMovie{})
 	initializers.DB.AutoMigrate(&models.Genre{})
-	initializers.DB.Create(genres)
+	initializers.DB.Create(Genres)
 }

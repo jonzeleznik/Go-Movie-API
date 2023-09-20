@@ -20,7 +20,7 @@ func MovieCreate(c *gin.Context) {
 	tmdb_id := body.TMDB_ID
 
 	// store movie
-	movie := models.Movie{Title: body.Title, TMDB_ID: tmdb_id, Genres: body.Genres}
+	movie := models.Movie{Title: body.Title, TMDB_ID: tmdb_id, Genre: body.Genre}
 	result := initializers.DB.Create(&movie)
 
 	// resp
