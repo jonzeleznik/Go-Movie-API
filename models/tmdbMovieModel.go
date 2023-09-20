@@ -1,16 +1,11 @@
 package models
 
-type genre struct {
-	Id   int64
-	Name string
-}
-
 type Movies struct {
 	Adult                 bool
 	Backdrop_path         string
 	Belongs_to_collection []string
 	Budget                int
-	Genres                []genre
+	Genres                []Genre
 	Homepage              string
 	Id                    int
 	Imdb_id               string

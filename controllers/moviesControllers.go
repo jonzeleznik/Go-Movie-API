@@ -3,8 +3,6 @@ package controllers
 import (
 	"e/initializers"
 	"e/models"
-	"fmt"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,23 +13,14 @@ func init() {
 
 func MovieCreate(c *gin.Context) {
 	// get data from body
-	var body struct {
-		Title   string
-		TMDB_ID string
-		Genre   string
-	}
-
+	var body models.Movie
 	c.Bind(&body)
 
 	// convert to int
-	tmdb_id, err := strconv.Atoi(body.TMDB_ID)
-	if err != nil {
-		fmt.Println("Error during conversion")
-		return
-	}
+	tmdb_id := body.TMDB_ID
 
 	// store movie
-	movie := models.Movie{Title: body.Title, TMDB_ID: tmdb_id, Genre: body.Genre}
+	movie := models.Movie{Title: body.Title, TMDB_ID: tmdb_id, Genres: body.Genres}
 	result := initializers.DB.Create(&movie)
 
 	// resp

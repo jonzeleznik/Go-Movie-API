@@ -40,7 +40,7 @@ func Search(c *gin.Context) {
 				fmt.Println(movies)
 				if len(movies) == 0 {
 					// -> if not write them to DB
-					movie := models.Movie{Title: movie.Original_title, TMDB_ID: movie.Id, Genre: "neki"}
+					movie := models.Movie{Title: movie.Original_title, TMDB_ID: movie.Id}
 					initializers.DB.Create(&movie)
 				}
 			}
