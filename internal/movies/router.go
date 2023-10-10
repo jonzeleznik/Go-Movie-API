@@ -1,15 +1,14 @@
 package movies
 
-import "github.com/gin-gonic/gin"
+import "github.com/gofiber/fiber/v2"
 
-func AddMovieRoutes(superRoute *gin.RouterGroup, controller *MovieController) {
-	movies := superRoute.Group("/movies")
+func AddMovieRoutes(app *fiber.App, controller *MovieController) {
+	rmovies := app.Group("/movies")
 
 	// add middlewares here
 
 	// add routes here
-	{
-		movies.POST("/", controller.create)
-		movies.GET("/", controller.getAll)
-	}
+	rmovies.Post("/", controller.create)
+	rmovies.Get("/", controller.getAll)
+	rmovies.Get("/search/:title", controller.search)
 }

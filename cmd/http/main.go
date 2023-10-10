@@ -10,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
+	"github.com/jonzeleznik/Go-Movie-API/internal/movies"
 	"github.com/jonzeleznik/Go-Movie-API/internal/storage"
 	"github.com/jonzeleznik/Go-Movie-API/pkg/shutdown"
 )
@@ -91,6 +92,9 @@ func buildServer(env EnvVars) (*fiber.App, func(), error) {
 	})
 
 	// create the user domain
+	movieStore := movies.NewMovieStorage(db)
+	movieController := movies.NewMovieController(movieStore)
+	movies.AddMovieRoutes(app, movieController)
 
 	return app, func() {
 		storage.CloseMongo(db)

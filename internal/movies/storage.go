@@ -39,6 +39,7 @@ func NewMovieStorage(db *mongo.Database) *MovieStorage {
 func (s *MovieStorage) createMovie(movie MovieDB) (string, error) {
 	collection := s.db.Collection("movies")
 
+	movie.Id = primitive.NewObjectID()
 	result, err := collection.InsertOne(context.TODO(), movie)
 	if err != nil {
 		return "", err
@@ -48,10 +49,27 @@ func (s *MovieStorage) createMovie(movie MovieDB) (string, error) {
 	return result.InsertedID.(primitive.ObjectID).Hex(), nil
 }
 
-func (s *MovieStorage) getAllTodos() ([]MovieDB, error) {
+func (s *MovieStorage) getAllMovies() ([]MovieDB, error) {
 	collection := s.db.Collection("movies")
 
 	cursor, err := collection.Find(context.TODO(), bson.M{})
+	if err != nil {
+		return nil, err
+	}
+
+	movies := make([]MovieDB, 0)
+	if err = cursor.All(context.TODO(), &movies); err != nil {
+		return nil, err
+	}
+
+	return movies, nil
+}
+
+func (s *MovieStorage) searchMovies(title string) ([]MovieDB, error) {
+	collection := s.db.Collection("movies")
+
+	regex := `.*` + title + `.*`
+	cursor, err := collection.Find(context.TODO(), bson.M{"title": bson.M{"$regex": regex}})
 	if err != nil {
 		return nil, err
 	}
