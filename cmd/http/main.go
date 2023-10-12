@@ -16,9 +16,9 @@ import (
 )
 
 type EnvVars struct {
-	MONGODB_URI  string
-	MONGODB_NAME string
-	PORT         string
+	mongodb_uri  string
+	mongodb_name string
+	port         string
 }
 
 func main() {
@@ -35,9 +35,9 @@ func main() {
 		log.Println("No .env file found")
 	}
 
-	env.MONGODB_URI = os.Getenv("MONGODB_URI")
-	env.MONGODB_NAME = os.Getenv("MONGODB_NAME")
-	env.PORT = os.Getenv("PORT")
+	env.mongodb_uri = os.Getenv("MONGODB_URI")
+	env.mongodb_name = os.Getenv("MONGODB_NAME")
+	env.port = os.Getenv("PORT")
 
 	// run the server
 	cleanup, err := run(env)
@@ -62,7 +62,7 @@ func run(env EnvVars) (func(), error) {
 
 	// start the server
 	go func() {
-		app.Listen("0.0.0.0:" + env.PORT)
+		app.Listen("0.0.0.0:" + env.port)
 	}()
 
 	// return a function to close the server and database
@@ -74,7 +74,7 @@ func run(env EnvVars) (func(), error) {
 
 func buildServer(env EnvVars) (*fiber.App, func(), error) {
 	// init the storage
-	db, err := storage.BootstrapMongo(env.MONGODB_URI, env.MONGODB_NAME, 10*time.Second)
+	db, err := storage.BootstrapMongo(env.mongodb_uri, env.mongodb_name, 10*time.Second)
 	if err != nil {
 		return nil, nil, err
 	}
