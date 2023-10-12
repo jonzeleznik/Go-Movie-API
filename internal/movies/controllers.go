@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/jonzeleznik/Go-Movie-API/pkg/requests"
 )
 
 type MovieController struct {
@@ -58,14 +59,47 @@ func (t *MovieController) getAll(c *fiber.Ctx) error {
 }
 
 func (t *MovieController) search(c *fiber.Ctx) error {
+	payload := 3
 	title := c.Params("title")
 
 	movies, err := t.storage.searchMovies(title)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error":   "Failed to get all movies",
+			"error":   "Failed to search movies",
 			"results": nil,
 		})
+	}
+
+	if len(movies) < payload {
+		res, err := requests.NewTmdbRequests().GetTmdbMovieTitle(title)
+
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error":   "Failed to search movies",
+				"results": nil,
+			})
+		}
+
+		for i, movie := range res.Results {
+			if i < 3 {
+				movies, err = t.storage.searchMovies(movie.Title)
+				if err != nil {
+					return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+						"error":   "Failed to search movies",
+						"results": nil,
+					})
+				}
+
+				if movie.Title != movies[0].Title {
+					// TODO: create new document in MongoDB
+					return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+						"error":   "ne dela",
+						"results": nil,
+					})
+				}
+
+			}
+		}
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
