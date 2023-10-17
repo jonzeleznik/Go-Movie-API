@@ -12,8 +12,7 @@ import (
 )
 
 type genreTmdb struct {
-	Id   int
-	Name string
+	Id int
 }
 
 type MoviesTmdb struct {

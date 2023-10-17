@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type genre struct {
+type Genre struct {
 	Id   int
 	Name string
 }
@@ -19,7 +19,7 @@ type MovieDB struct {
 	TMDB_ID       int                `bson:"tmdb_id" json:"tmdb_id"`
 	IMDB_ID       string             `bson:"imdb_id" json:"imdb_id"`
 	Overview      string             `bson:"overview" json:"overview"`
-	Genre         []genre            `bson:"genre" json:"genre"`
+	Genre         []Genre            `bson:"genre" json:"genre"`
 	Release_date  string             `bson:"release_date" json:"release_date"`
 	Runtime       int                `bson:"Runtime" json:"Runtime"`
 	Poster_path   string             `bson:"poster_path" json:"poster_path"`
