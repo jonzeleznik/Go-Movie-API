@@ -2,6 +2,7 @@ package movies
 
 import (
 	"context"
+	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -68,14 +69,16 @@ func (s *MovieStorage) getAllMovies() ([]MovieDB, error) {
 func (s *MovieStorage) searchMovies(title string) ([]MovieDB, error) {
 	collection := s.db.Collection("movies")
 
-	regex := `.*` + title + `.*`
-	cursor, err := collection.Find(context.TODO(), bson.M{"title": bson.M{"$regex": regex}})
+	filter := bson.M{"title": bson.M{"$regex": (".*" + title + ".*"), "$options": "im"}}
+	cursor, err := collection.Find(context.TODO(), filter)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 
 	movies := make([]MovieDB, 0)
 	if err = cursor.All(context.TODO(), &movies); err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 

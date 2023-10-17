@@ -71,7 +71,8 @@ func (m *MovieController) search(c *fiber.Ctx) error {
 	}
 
 	if len(movies) < payload {
-		res, err := requests.NewTmdbRequests().GetTmdbMovieTitle(title)
+		req := requests.NewTmdbRequests()
+		res, err := req.GetTmdbMovieTitle(title, "title")
 
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -98,7 +99,7 @@ func (m *MovieController) search(c *fiber.Ctx) error {
 						genres = append(genres, Genre{Name: "m", Id: g.Id})
 					}
 
-					req := MovieDB{
+					doc := MovieDB{
 						Title:         movie.Title,
 						TMDB_ID:       movie.Id,
 						IMDB_ID:       movie.Imdb_id,
@@ -109,10 +110,10 @@ func (m *MovieController) search(c *fiber.Ctx) error {
 						Poster_path:   movie.Poster_path,
 						Backdrop_path: movie.Backdrop_path,
 					}
-					fmt.Println(req)
+					fmt.Println(doc)
 
 					// create the movie
-					_, err := m.storage.createMovie(req)
+					_, err := m.storage.createMovie(doc)
 					if err != nil {
 						fmt.Println(err)
 						return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
