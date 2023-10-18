@@ -1,7 +1,7 @@
 package movies
 
 import (
-	"fmt"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jonzeleznik/Go-Movie-API/pkg/requests"
@@ -29,7 +29,6 @@ func (m *MovieController) create(c *fiber.Ctx) error {
 	// create the movie
 	id, err := m.storage.createMovie(req)
 	if err != nil {
-		fmt.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Failed to create movie",
 			"results": nil,
@@ -53,8 +52,9 @@ func (m *MovieController) getAll(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"error":   nil,
-		"results": movies,
+		"error":        nil,
+		"result_count": len(movies),
+		"results":      movies,
 	})
 }
 
@@ -72,7 +72,7 @@ func (m *MovieController) search(c *fiber.Ctx) error {
 
 	if len(movies) < payload {
 		req := requests.NewTmdbRequests()
-		res, err := req.GetTmdbMovieTitle(title, "title")
+		res, err := req.GetTmdbMovieTitle(title)
 
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -83,39 +83,47 @@ func (m *MovieController) search(c *fiber.Ctx) error {
 
 		for i, movie := range res.Results {
 			if i < payload {
-				movies, err = m.storage.searchMovies(movie.Title)
+				id := strconv.Itoa(movie.Id)
+
+				// get details
+				details, err := req.GetTmdbMovieId(id)
 				if err != nil {
 					return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 						"error":   "Failed to search movies. Database error",
 						"results": nil,
 					})
 				}
-				if len(movies) == 0 || movie.Title != movies[0].Title {
+
+				movies, err = m.storage.searchMovies(details.Title)
+				if err != nil {
+					return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+						"error":   "Failed to search movies. Database error",
+						"results": nil,
+					})
+				}
+				if len(movies) == 0 || details.Title != movies[0].Title {
 					// TODO: search by ID then create document
 					// convert to correct struct
 					var genres []Genre
-					for _, g := range movie.Genres {
-						fmt.Println(g.Id)
-						genres = append(genres, Genre{Name: "m", Id: g.Id})
+					for _, g := range details.Genres {
+						genres = append(genres, Genre(g))
 					}
 
 					doc := MovieDB{
-						Title:         movie.Title,
-						TMDB_ID:       movie.Id,
-						IMDB_ID:       movie.Imdb_id,
-						Overview:      movie.Overview,
+						Title:         details.Title,
+						TMDB_ID:       details.Id,
+						IMDB_ID:       details.Imdb_id,
+						Overview:      details.Overview,
 						Genre:         genres,
-						Release_date:  movie.Release_date,
-						Runtime:       movie.Runtime,
-						Poster_path:   movie.Poster_path,
-						Backdrop_path: movie.Backdrop_path,
+						Release_date:  details.Release_date,
+						Runtime:       details.Runtime,
+						Poster_path:   details.Poster_path,
+						Backdrop_path: details.Backdrop_path,
 					}
-					fmt.Println(doc)
 
 					// create the movie
 					_, err := m.storage.createMovie(doc)
 					if err != nil {
-						fmt.Println(err)
 						return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 							"message": "Failed to search movies. Database error",
 							"results": nil,
@@ -137,7 +145,8 @@ func (m *MovieController) search(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"error":   nil,
-		"results": movies,
+		"error":        nil,
+		"result_count": len(movies),
+		"results":      movies,
 	})
 }

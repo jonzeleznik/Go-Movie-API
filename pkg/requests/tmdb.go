@@ -12,7 +12,8 @@ import (
 )
 
 type genreTmdb struct {
-	Id int
+	Id   int    `json:"Id"`
+	Name string `json:"name"`
 }
 
 type MoviesTmdb struct {
@@ -59,7 +60,8 @@ func NewTmdbRequests() *TmdbRequests {
 }
 
 func (t *TmdbRequests) GetTmdbMovieTitle(title string) (tmdbResponse, error) {
-	endpoint := t.ApiUrl + "/search/movie?query=" + url.PathEscape(title) + "&include_adult=false&language=en-US&page=1"
+
+	endpoint := t.ApiUrl + "/search/movie?query=" + url.PathEscape(title) + "&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc"
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
@@ -85,11 +87,44 @@ func (t *TmdbRequests) GetTmdbMovieTitle(title string) (tmdbResponse, error) {
 
 	var resp tmdbResponse
 	err = json.Unmarshal([]byte(raw), &resp)
-
 	if err != nil {
+
 		return tmdbResponse{}, err
 	}
-
 	return resp, nil
 
+}
+func (t *TmdbRequests) GetTmdbMovieId(id string) (MoviesTmdb, error) {
+
+	endpoint := t.ApiUrl + "/movie/" + url.PathEscape(id) + "?include_adult=false&language=en-US&page=1"
+
+	req, err := http.NewRequest("GET", endpoint, nil)
+	if err != nil {
+		return MoviesTmdb{}, err
+	}
+
+	req.Header.Add("accept", "application/json")
+	req.Header.Add("Authorization", ("Bearer " + t.AccessToken))
+
+	r, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return MoviesTmdb{}, err
+	}
+
+	defer r.Body.Close()
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		return MoviesTmdb{}, err
+	}
+
+	raw := string(body)
+
+	var resp MoviesTmdb
+	err = json.Unmarshal([]byte(raw), &resp)
+	if err != nil {
+
+		return MoviesTmdb{}, err
+	}
+	return resp, nil
 }
