@@ -1,0 +1,21 @@
+version: "3"
+
+tasks:
+  dev:
+    cmds:
+      - go run cmd/http/main.go
+  # docs:
+  #   cmds:
+  #     - swag init --dir ./cmd/http,./internal/todo
+  build:
+    cmds:
+      - go build -o http-server cmd/http/main.go
+  start:
+    cmds:
+      - ./http-server
+  install:
+    cmds:
+      - go install github.com/go-task/task/v3/cmd/task@latest
+      - go get github.com/gofiber/fiber/v2
+      - go get github.com/joho/godotenv
+      - go get go.mongodb.org/mongo-driver
