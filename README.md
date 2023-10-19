@@ -51,3 +51,9 @@ go run main.go
 - POST `/watchList` - add movie to watchlist
 - GET `/watchList` - get all movies from watchlist
 - GET `/search/:title` - search movies 
+
+
+
+go get go.mongodb.org/mongo-driver/mongo
+go get github.com/joho/godotenv
+go get github.com/gofiber/fiber/v2
