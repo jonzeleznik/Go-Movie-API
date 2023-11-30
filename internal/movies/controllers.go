@@ -101,8 +101,7 @@ func (m *MovieController) search(c *fiber.Ctx) error {
 						"results": nil,
 					})
 				}
-				if len(movies) == 0 || details.Title != movies[0].Title {
-					// TODO: search by ID then create document
+				if len(movies) == 0 || details.Imdb_id != movies[0].IMDB_ID {
 					// convert to correct struct
 					var genres []Genre
 					for _, g := range details.Genres {
