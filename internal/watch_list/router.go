@@ -9,5 +9,5 @@ func AddWatchListRoutes(app *fiber.App, controller *WatchListController) {
 
 	// add routes here
 	rwatchlist.Post("/", controller.create)
-	// rwatchlist.Get("/", controller.getAll)
+	rwatchlist.Get("/", controller.getAll)
 }
