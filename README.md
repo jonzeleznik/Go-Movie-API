@@ -16,10 +16,10 @@ The focus is on the `/search/` endpoint. It checks if, the movie title you are s
 ### Prerequisites
 - Go
 - TMDB api key
-- cloned repo
+- Cloned repo
 
 ### Dependencies
-- gorm
+- fiber
 - gin
 - /joho/godotenv
 
@@ -28,32 +28,23 @@ The focus is on the `/search/` endpoint. It checks if, the movie title you are s
 Install depoendecies
 
 ```
-go mod download
+task install
 ```
 
-First migrate the DB
+Build app
 ```
-go run migrations/migrate.go
+task build
 ```
 
-Run the program
-
+Run the app
 ```
-go run main.go
+task dev
 ```
 
 ## Endpoints <a name = "usage"></a>
 
 - POST `/movies` - create a movie
-- GET `/movies/title/:title` - get movies by title
-- GET `/movies/id/:id` - get movies by id
-- DELETE `/movies/id/:id` - delete movies
-- POST `/watchList` - add movie to watchlist
-- GET `/watchList` - get all movies from watchlist
-- GET `/search/:title` - search movies 
-
-
-
-go get go.mongodb.org/mongo-driver/mongo
-go get github.com/joho/godotenv
-go get github.com/gofiber/fiber/v2
+- GET `/movies` - get all movies
+- GET `/search/:title` - search movies
+- POST `/watchlist` - add movie to watchlist
+- GET `/watchlist` - get all movies from watchlist
