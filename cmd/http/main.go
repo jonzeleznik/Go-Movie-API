@@ -11,6 +11,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
 	"github.com/jonzeleznik/Go-Movie-API/internal/movies"
+	scrapposts "github.com/jonzeleznik/Go-Movie-API/internal/scrap_posts"
 	"github.com/jonzeleznik/Go-Movie-API/internal/storage"
 	watchlist "github.com/jonzeleznik/Go-Movie-API/internal/watch_list"
 	"github.com/jonzeleznik/Go-Movie-API/pkg/shutdown"
@@ -100,6 +101,8 @@ func buildServer(env EnvVars) (*fiber.App, func(), error) {
 	watchlistStore := watchlist.NewWatchListStorage(db)
 	watchlistContoller := watchlist.NewWatchListController(watchlistStore)
 	watchlist.AddWatchListRoutes(app, watchlistContoller)
+
+	scrapposts.AddScrapPostsRoutes(app)
 
 	return app, func() {
 		storage.CloseMongo(db)
