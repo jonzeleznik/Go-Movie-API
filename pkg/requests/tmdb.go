@@ -54,8 +54,8 @@ func NewTmdbRequests() *TmdbRequests {
 		fmt.Println("No .env file found")
 	}
 	return &TmdbRequests{
-		AccessToken: os.Getenv("ACCESS_TOKEN"),
-		ApiUrl:      os.Getenv("API_URL"),
+		AccessToken: os.Getenv("TMDB_ACCESS_TOKEN"),
+		ApiUrl:      os.Getenv("TMDB_API_URL"),
 	}
 }
 
