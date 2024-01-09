@@ -7,7 +7,7 @@ import (
 )
 
 func checkPosts(c *fiber.Ctx) error {
-	posts := scraper.HollywoodReporter()
+	posts := scraper.HollywoodReporterPosts()
 
 	return c.Status(fiber.StatusAccepted).JSON(fiber.Map{
 		"message": nil,
